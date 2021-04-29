@@ -154,8 +154,51 @@ if (verticalBoard > 0 && verticalBoard < 5)
   } 
 }
 
-void checkDiagonal (verticalBoard, horizontalBoard, player){
-  
+int checkDiagonalQ1 (vertical, horizontal, character){
+  if ((vertical >= 0 && vertical <= 5) && (horizontal >= 0 && horizontal <= 6) && (board[vertical][horizontal] == character))
+  {
+    return checkDiagonalQ1(vertical + 1, horizontal + 1, character);
+  }
+}
+
+int checkDiagonalQ2 (vertical, horizontal, character){
+  if ((vertical >= 0 && vertical <= 5) && (horizontal >= 0 && horizontal <= 6) && (board[vertical][horizontal] == character))
+  {
+    return checkDiagonalQ2(vertical + 1, horizontal - 1, character);
+  }
+}
+
+int checkDiagonalQ3 (vertical, horizontal, character){
+  if ((vertical >= 0 && vertical <= 5) && (horizontal >= 0 && horizontal <= 6) && (board[vertical][horizontal] == character))
+  {
+    return checkDiagonalQ3(vertical - 1, horizontal + 1, character);
+  }
+}
+
+int checkDiagonalQ4 (vertical, horizontal, character){
+  if ((vertical >= 0 && vertical <= 5) && (horizontal >= 0 && horizontal <= 6) && (board[vertical][horizontal] == character))
+  {
+    return checkDiagonalQ4(vertical - 1, horizontal - 1, character);
+  }
+}
+
+void checkDiagonals(character)
+{
+  for (int i = 0; i < 6; i ++){
+    for (int j = 0; j < 7; j++){
+      int count = checkDiagonalQ1(i, j, character);
+      count+= checkDiagonalQ4(i, j, character);
+
+      int count2 = checkDiagonalQ2(i, j, character); 
+      count2+= checkDiagonalQ3(i, j, character);
+
+      if(count>=5 || count2>=5)
+				{
+          printf("Player %c has won!\n", character);
+          exit(0);
+        }
+    }
+  }
 }
 
 
@@ -258,6 +301,7 @@ while (i < 43)
   populateBoard(verticalPosition, horizontalPosition, firstPlayer);
   checkHorizontal(verticalPosition, horizontalPosition, firstPlayer);
   checkVertical(verticalPosition, horizontalPosition, firstPlayer);
+  checkDiagonals(firstPlayer);
   }
 
   else if (i % 2 == 0)
@@ -278,7 +322,7 @@ while (i < 43)
   populateBoard(verticalPosition, horizontalPosition, secondPlayer);
   checkHorizontal(verticalPosition, horizontalPosition, secondPlayer);
   checkVertical(verticalPosition, horizontalPosition, secondPlayer);
-
+  checkDiagonals(secondPlayer);
   }
   else {
     printf("Something went wrong...");

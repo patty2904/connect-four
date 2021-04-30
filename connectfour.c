@@ -8,6 +8,41 @@ Connect four game in C */
 #include <stdlib.h>
 
 char board[6][7];
+char stack1[];
+char stack2[];
+int count = 0;
+int count2 = 0;
+
+void pushStack1(board)
+{
+  int rest = stack1[count];
+  rest = board;
+  count++;
+}
+
+char popStack1()
+{
+char rest = stack1[count - 1];
+count--;
+return rest;
+}
+
+void pushStack2()
+{
+  char rest = stack2[count];
+  rest = stack1[count - 1];
+  count2++;
+}
+
+char popStack2()
+{
+  char rest = stack2[count2 - 1];
+  rest = stack1[count + 1];
+  count2--;
+  return rest;
+
+}
+
 
 void checkHorizontal(verticalBoard, horizontalBoard, character)
 {
@@ -204,6 +239,7 @@ void checkDiagonals(character)
 
 void populateBoard(verticalBoard, horizontalBoard, player)
 {
+  int flag = 1;
   char character = ' ';
   if (player == 'Y'){
     character = 'Y';
@@ -211,8 +247,10 @@ void populateBoard(verticalBoard, horizontalBoard, player)
     character = 'R';
   }
 
+
   if (board[verticalBoard][horizontalBoard] == '-') {
 do{
+  
 if(board[verticalBoard + 1][horizontalBoard] == '-'){
       printf("You cannot place a token if there is space below.\n");
       exit(0);
@@ -227,6 +265,7 @@ while (!((verticalBoard + 1) > 5));
   else {
     printf("Something is already in this position.\n");
   }
+
   
   int vertNum = 0;
   printf("%s", "  0 1 2 3 4 5 6\n");
@@ -276,54 +315,79 @@ scanf("%c", &firstPlayer);
 
 if (firstPlayer == 'Y')
   secondPlayer = 'R';
-else 
+else if (firstPlayer == 'R')
 secondPlayer = 'Y';
+else{
+printf("This character is not valid.");
+  exit(0);
+}
 
 int i = 1;
 while (i < 43)
 { 
   int verticalPosition = 0;
   int horizontalPosition= 0;
+  int flag = 1;
+  char redo = 'N';
+
   if (i % 2 != 0){
+  do{
   printf("%c, What move do you want to make?  \n", firstPlayer);
   printf("Vertical position: ");
   scanf("%d", &verticalPosition);
-  if (verticalPosition > 5 || verticalPosition < 0){
-    printf("This position does not exist.\n");
-    break; 
-  }
   printf("Horizontal position: ");
   scanf("%d", &horizontalPosition);
-  if (horizontalPosition > 6 || horizontalPosition < 0){
-    printf("This position does not exist.\n");
-    break; 
+  if ((horizontalPosition <= 6 && horizontalPosition >= 0) || (verticalPosition <= 5 && verticalPosition >= 0)){
+    flag = 2;
   }
+  printf("This position does not exist.\n");
+  }
+  while (flag == 1);
   populateBoard(verticalPosition, horizontalPosition, firstPlayer);
+  pushStack1(board);
   checkHorizontal(verticalPosition, horizontalPosition, firstPlayer);
   checkVertical(verticalPosition, horizontalPosition, firstPlayer);
   checkDiagonals(firstPlayer);
+
+  printf("Do you wish to undo this move? (Y or N)");
+  scanf("%c", &redo);
+  if (redo == 'Y'){
+    pushStack2();
+    popStack1();
   }
+  }
+
+
 
   else if (i % 2 == 0)
   {
+    do{
   printf("%c, What move do you want to make?  \n", secondPlayer);
   printf("Vertical position: ");
   scanf("%d", &verticalPosition);
-  if (verticalPosition > 5 || verticalPosition < 0){
-    printf("This position does not exist.\n");
-    break; 
-  }
   printf("Horizontal position: ");
   scanf("%d", &horizontalPosition);
-   if (horizontalPosition > 6 || horizontalPosition < 0){
-    printf("This position does not exist.\n");
-    break; 
+  if ((horizontalPosition <= 6 && horizontalPosition >= 0) || (verticalPosition <= 5 && verticalPosition >= 0)){
+    flag = 2;
   }
+   printf("This position does not exist.\n");
+  }
+  while (flag == 1);
   populateBoard(verticalPosition, horizontalPosition, secondPlayer);
+  pushStack1(board);
   checkHorizontal(verticalPosition, horizontalPosition, secondPlayer);
   checkVertical(verticalPosition, horizontalPosition, secondPlayer);
   checkDiagonals(secondPlayer);
+
+  printf("Do you wish to undo this move? (Y or N)");
+  scanf("%c", &redo);
+  if (redo == 'Y'){
+    pushStack2();
+    popStack1();
   }
+  }
+
+
   else {
     printf("Something went wrong...");
   }
